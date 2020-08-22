@@ -70,7 +70,6 @@ app.delete("/api/user/:id", (req, res) => {
 });
 
 app.patch("/api/user/:id", (req, res) => {
-  // Ketik  untuk memperbarui item yang dipilih
   connection.query(
     "UPDATE users SET name = ? WHERE id = ? ",
     [req.body.name, req.params.id],
