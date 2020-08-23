@@ -35,28 +35,32 @@ const swaggerUi = require("swagger-ui-express");
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 app.get("/api/users", (req, res) => {
-  connection.query("SELECT * FROM users", (error, results) => {
-    res.status(200).json(results);
+  let sql = "SELECT * FROM users";
+  connection.query(sql, (error, results) => {
+    if (!error) {
+      res.status(200).json(results);
+    }
+    res.status(400).json({ message: error });
   });
 });
 app.get("/api/user/:id", (req, res) => {
-  connection.query(
-    "SELECT * FROM users WHERE id=?",
-    [req.params.id],
-    (error, results) => {
+  let sql = "SELECT * FROM users WHERE id=?";
+  connection.query(sql, [req.params.id], (error, results) => {
+    if (!error) {
       res.status(200).json(results);
     }
-  );
+    res.status(400).json({ message: error });
+  });
 });
 
 app.post("/api/user", (req, res) => {
-  connection.query(
-    "INSERT INTO users (name) VALUES (?)",
-    [req.body.name],
-     (error, results) => {
-     res.status(201).json({message:"Created"});
+  let sql = "INSERT INTO users (name) VALUES (?)";
+  connection.query(sql, [req.body.name], (error, results) => {
+    if (!error) {
+      res.status(201).json({ message: "Created" });
     }
-  );
+    res.status(400).json({ message: error });
+  });
 });
 
 app.delete("/api/user/:id", (req, res) => {
@@ -64,19 +68,22 @@ app.delete("/api/user/:id", (req, res) => {
     "DELETE FROM users WHERE id = ?",
     [req.params.id],
     (err, result) => {
-      res.status(200).json({ message: "Deleted Success" });
+      if (!err) {
+        res.status(200).json({ message: "Deleted Success" });
+      }
+      res.status(400).json({ message: err });
     }
   );
 });
 
-app.patch("/api/user/:id", (req, res) => {
-  connection.query(
-    "UPDATE users SET name = ? WHERE id = ? ",
-    [req.body.name, req.params.id],
-    (err, result) => {
+app.put("/api/user/:id", (req, res) => {
+  let sql = "UPDATE users SET name = ? WHERE id = ? ";
+  connection.query(sql, [req.body.name, req.params.id], (err, result) => {
+    if (!err) {
       res.status(201).json({ message: "Update Success" });
     }
-  );
+    console.log(err);
+  });
 });
 
 app.listen(PORT);
