@@ -37,52 +37,39 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.get("/api/users", (req, res) => {
   let sql = "SELECT * FROM users";
   connection.query(sql, (error, results) => {
-    if (!error) {
-      res.status(200).json(results);
-    }
-    res.status(400).json({ message: error });
+    if (error) console.log(error);
+    res.status(200).json(results);
   });
 });
 app.get("/api/user/:id", (req, res) => {
   let sql = "SELECT * FROM users WHERE id=?";
   connection.query(sql, [req.params.id], (error, results) => {
-    if (!error) {
-      res.status(200).json(results);
-    }
-    res.status(400).json({ message: error });
+    if (error) console.log(error);
+    res.status(200).json(results);
   });
 });
 
 app.post("/api/user", (req, res) => {
   let sql = "INSERT INTO users (name) VALUES (?)";
   connection.query(sql, [req.body.name], (error, results) => {
-    if (!error) {
-      res.status(201).json({ message: "Created" });
-    }
-    res.status(400).json({ message: error });
+    if (error) console.log(error);
+    res.status(201).json({ message: "Created" });
   });
 });
 
 app.delete("/api/user/:id", (req, res) => {
-  connection.query(
-    "DELETE FROM users WHERE id = ?",
-    [req.params.id],
-    (err, result) => {
-      if (!err) {
-        res.status(200).json({ message: "Deleted Success" });
-      }
-      res.status(400).json({ message: err });
-    }
-  );
+  let sql = "DELETE FROM users WHERE id = ?";
+  connection.query(sql, [req.params.id], (err, result) => {
+    if (err) console.log(err);
+    res.status(200).json({ message: "Deleted Success" });
+  });
 });
 
 app.put("/api/user/:id", (req, res) => {
   let sql = "UPDATE users SET name = ? WHERE id = ? ";
-  connection.query(sql, [req.body.name, req.params.id], (err, result) => {
-    if (!err) {
-      res.status(201).json({ message: "Update Success" });
-    }
-    console.log(err);
+  connection.query(sql, [req.body.name, req.params.id], (err, results) => {
+    if (err) console.log(err);
+    res.status(201).json({ message: "Update Success" });
   });
 });
 
